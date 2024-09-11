@@ -1,0 +1,37 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: customerService
+          uri: lb:http://CUSTOMER-SERVICE
+          predicates:
+            - Path=/api/v1/customers/**
+        - id: customerService
+          uri: lb:http://CUSTOMER-SERVICE
+          predicates:
+            - Path=/api/v1/createCustomer/**
+        - id: orderService
+          uri: lb:http://ORDER-SERVICE
+          predicates:
+            - Path=/api/v1/orders/**
+        - id: order-line-service
+          uri: lb:http://CUSTOMER-SERVICE
+          predicates:
+            - Path=/api/v1/order-lines/**
+        - id: productService
+          uri: lb:http://PRODUCT-SERVICE
+          predicates:
+            - Path=/api/v1/viewProducts/**
+        - id: productService
+          uri: lb:http://PRODUCT-SERVICE
+          predicates:
+            - Path=/api/v1/products/**
+        - id: paymentService
+          uri: lb:http://PAYMENT-SERVICE
+          predicates:
+            - Path=/api/v1/payments/**
+server:
+  port: 8055

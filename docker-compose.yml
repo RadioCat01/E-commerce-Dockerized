@@ -1,0 +1,192 @@
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - 5432:5432
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - microservices-net
+
+  keycloak:
+    container_name: keycloak-ms
+    image: quay.io/keycloak/keycloak:24.0.2
+    ports:
+      - 9098:9100
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    networks:
+      - microservices-net
+    command:
+      - "start-dev"
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+    networks:
+      - microservices-net
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: ms_kafka
+    ports:
+      - 9092:9092
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://ms_kafka:9093,OUTSIDE://host.docker.internal:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENER_NAME: INSIDE
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_BROKER_ID: 1
+    networks:
+      - microservices-net
+
+  mail-dev:
+    container_name: ms-mail-dev
+    image: maildev/maildev
+    ports:
+      - 1080:1080
+      - 1025:1025
+    networks:
+      - microservices-net
+
+  configServer:
+    container_name: configserver
+    image: radiocat2000/configserver:latest
+    ports:
+      - "8080:8080"
+    networks:
+      - microservices-net
+
+  serviceRegistry:
+    container_name: service-reg
+    image: radiocat2000/discoveryservice:latest
+    ports:
+      - "8761:8761"
+    depends_on:
+      - configServer
+    networks:
+      - microservices-net
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  customerService:
+    container_name: customer-service
+    image: radiocat2000/customer-service:latest
+    ports:
+      - "8050:8050"
+    depends_on:
+      - postgres
+      - configServer
+      - serviceRegistry
+    networks:
+      - microservices-net
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  productService:
+    container_name: product-service
+    image: radiocat2000/product-service
+    ports:
+      - "8051:8051"
+    depends_on:
+      - postgres
+      - configServer
+      - serviceRegistry
+    networks:
+      - microservices-net
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  notificationService:
+    container_name: notification-service
+    image: radiocat2000/notification-service:latest
+    ports:
+      - "8054:8054"
+    depends_on:
+      - postgres
+      - configServer
+      - serviceRegistry
+      - kafka
+    networks:
+      - microservices-net
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  paymentService:
+    container_name: payment-service
+    image: radiocat2000/paymentservice:latest
+    ports:
+      - "8053:8053"
+    depends_on:
+      - postgres
+      - zookeeper
+      - kafka
+      - configServer
+      - serviceRegistry
+    networks:
+      - microservices-net
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  gatewayService:
+    container_name: gateway-service
+    image: radiocat2000/gateway-service
+    ports:
+      - "8055:8055"
+    depends_on:
+      - configServer
+      - serviceRegistry
+    networks:
+      - microservices-net
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  orderService:
+    container_name: order-service
+    image: radiocat2000/order-service:latest
+    ports:
+      - "8052:8052"
+    depends_on:
+      - kafka
+      - postgres
+      - configServer
+      - serviceRegistry
+    networks:
+      - microservices-net
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+networks:
+  microservices-net:
+    driver: bridge
+    name: microservices-net
+
+volumes:
+  postgres:
+  pgadmin:

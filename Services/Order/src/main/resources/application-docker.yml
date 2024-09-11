@@ -1,0 +1,10 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://keycloak-ms:9100/realms/micro-serviceV1"
+  application:
+    name: orderService
+  config:
+    import: optional:configserver:http://configserver:8080

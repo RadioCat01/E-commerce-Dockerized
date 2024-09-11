@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/order
+    username: username
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  kafka:
+    producer:
+      bootstrap-servers: ms_kafka:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: orderConfirmation:com.Ecom.Order.kafka.OrderConfirmation
+
+server:
+  port: 8052
+
+application:
+  config:
+    customer-url: http://customer-service:8050/api/v1/customers
+    product-url: http://product-service:8051/api/v1/products
+    payment-url: http://payment-service:8053/api/v1/payments/payment/create
+    gateway-url: http://gateway-service:8055/api/v1/gateway

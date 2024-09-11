@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details</title>
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .order-info {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order-info p {
+            margin: 0 0 10px;
+            font-size: 1rem;
+        }
+
+        .order-info p span {
+            font-weight: bold;
+        }
+
+        .products {
+            padding: 20px;
+        }
+
+        .products table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .products th, .products td {
+            padding: 15px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .products th {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+
+        .products tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .footer {
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+
+        .total-amount {
+            padding: 20px;
+            background-color: #f0f2f5;
+            border-radius: 0 0 12px 12px;
+            text-align: right;
+        }
+
+        .total-amount p {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Order Details</h1>
+    </div>
+
+    <div class="order-info">
+        <p>Customer: <span th:text="${customerName}"></span></p>
+        <p>Order ID: <span th:text="${orderReference}"></span></p>
+    </div>
+
+    <div class="products">
+        <table>
+            <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${products}">
+                <td th:text="${product.name}"></td>
+                <td th:text="${product.quantity}"></td>
+                <td th:text="${product.price}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="total-amount">
+        <p>Total Amount: $<span th:text="${totalAmount}"></span></p>
+    </div>
+
+    <div class="footer">
+        <p>This is an automated message. Please do not reply to this email.</p>
+        <p>&copy; 2024 GymShark.Com. All rights reserved.</p>
+    </div>
+</div>
+</body>
+
+</html>

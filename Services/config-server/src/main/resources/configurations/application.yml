@@ -1,0 +1,16 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://service-reg:8761/eureka
+name:
+  value: CEcom
+spring:
+  cloud:
+    config:
+      override-system-properties: false
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoint: http://zipkin:9411/api/v2/tracing
