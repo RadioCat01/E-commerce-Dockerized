@@ -10,8 +10,8 @@ spring:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   kafka:
+    bootstrap-servers: ms_kafka:29092
     producer:
-      bootstrap-servers: ms_kafka:9093
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:

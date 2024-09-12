@@ -27,7 +27,7 @@ services:
     container_name: keycloak-ms
     image: quay.io/keycloak/keycloak:24.0.2
     ports:
-      - 9098:9100
+      - 9098:8080
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
@@ -40,11 +40,8 @@ services:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper
     environment:
-      ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-    ports:
-      - 22181:2181
     networks:
       - microservices-net
 
@@ -52,17 +49,18 @@ services:
     image: confluentinc/cp-kafka:latest
     container_name: ms_kafka
     ports:
-      - 9092:9092
+      - "9092:9092"
     depends_on:
       - zookeeper
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://ms_kafka:9093,OUTSIDE://host.docker.internal:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-      KAFKA_LISTENER_NAME: INSIDE
-      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://ms_kafka:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
     networks:
       - microservices-net
 
@@ -80,6 +78,12 @@ services:
     image: radiocat2000/configserver:latest
     ports:
       - "8080:8080"
+    depends_on:
+      - postgres
+      - zipkin
+      - zookeeper
+      - kafka
+      - mail-dev
     networks:
       - microservices-net
 
@@ -156,7 +160,7 @@ services:
 
   gatewayService:
     container_name: gateway-service
-    image: radiocat2000/gateway-service
+    image: radiocat2000/gatewayservice
     ports:
       - "8055:8055"
     depends_on:

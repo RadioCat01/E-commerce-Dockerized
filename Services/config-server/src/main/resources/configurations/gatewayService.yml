@@ -6,31 +6,31 @@ spring:
           enabled: true
       routes:
         - id: customerService
-          uri: lb:http://CUSTOMER-SERVICE
+          uri: lb:http://CUSTOMERSERVICE
           predicates:
             - Path=/api/v1/customers/**
         - id: customerService
-          uri: lb:http://CUSTOMER-SERVICE
+          uri: lb:http://CUSTOMERSERVICE
           predicates:
             - Path=/api/v1/createCustomer/**
         - id: orderService
-          uri: lb:http://ORDER-SERVICE
+          uri: lb:http://ORDERSERVICE
           predicates:
             - Path=/api/v1/orders/**
         - id: order-line-service
-          uri: lb:http://CUSTOMER-SERVICE
+          uri: lb:http://CUSTOMERSERVICE
           predicates:
             - Path=/api/v1/order-lines/**
         - id: productService
-          uri: lb:http://PRODUCT-SERVICE
+          uri: lb:http://PRODUCTSERVICE
           predicates:
             - Path=/api/v1/viewProducts/**
         - id: productService
-          uri: lb:http://PRODUCT-SERVICE
+          uri: lb:http://PRODUCTSERVICE
           predicates:
             - Path=/api/v1/products/**
         - id: paymentService
-          uri: lb:http://PAYMENT-SERVICE
+          uri: lb:http://PAYMENTSERVICE
           predicates:
             - Path=/api/v1/payments/**
 server:

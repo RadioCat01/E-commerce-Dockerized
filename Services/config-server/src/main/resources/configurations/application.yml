@@ -8,9 +8,6 @@ spring:
   cloud:
     config:
       override-system-properties: false
+  zipkin:
+    base-url: http://zipkin:9411
 
-management:
-  tracing:
-    sampling:
-      probability: 1.0
-  endpoint: http://zipkin:9411/api/v2/tracing

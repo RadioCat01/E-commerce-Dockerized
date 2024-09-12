@@ -1,7 +1,7 @@
 spring:
   kafka:
     consumer:
-      bootstrap-servers: ms_kafka:9092
+      bootstrap-servers: ms_kafka:29092
       group-id: paymentGroup,orderGroup
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
