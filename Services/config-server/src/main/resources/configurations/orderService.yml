@@ -22,7 +22,7 @@ server:
 
 application:
   config:
-    customer-url: http://customer-service:8050/api/v1/customers
-    product-url: http://product-service:8051/api/v1/products
-    payment-url: http://payment-service:8053/api/v1/payments/payment/create
-    gateway-url: http://gateway-service:8055/api/v1/gateway
+    customer-url: http://customerService:8050/api/v1/customers
+    product-url: http://productService:8051/api/v1/products
+    payment-url: http://paymentService:8053/api/v1/payments/payment/create
+    gateway-url: http://gatewayService:8055/api/v1/gateway

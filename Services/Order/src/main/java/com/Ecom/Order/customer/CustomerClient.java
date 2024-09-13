@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @FeignClient(
-        name = "customer-service",
+        name = "customerService",
         url = "${application.config.customer-url}"
 )
 public interface CustomerClient {
